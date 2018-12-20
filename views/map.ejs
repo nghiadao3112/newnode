@@ -1,0 +1,48 @@
+
+<html>
+  <head>
+    <style>
+      body {
+          	padding: 20px;
+          }
+          
+          table {
+            border: #ff0000 solid 2px;
+          	margin: 0 auto;
+          	border-collapse: collapse;
+          	background: #f7f5f2;
+          }
+          td {
+              border: #ff0000 solid 2px;
+              width: 20px; height: 20px;
+          }
+    </style>
+    <script>
+      
+    </script>
+  </head>
+  <body>
+    <h1>Your 's board</h1>
+    <table>
+      <% for(var j=0;j<8;j++) { %>
+        <tr>
+        <% for(var i=0;i<8;i++) { %>
+            <td></td>
+        <%}%>
+        </tr>
+      <%}%>
+        
+    </table>
+    
+    <h1>Opponent 's Board</h1>
+    <table>
+    	<% for(var j=0;j<8;j++) { %>
+        <tr>
+        <% for(var i=0;i<8;i++) { %>
+            <td></td>
+        <%}%>
+        </tr>
+      <%}%>
+    </table>
+  </body>
+</html>

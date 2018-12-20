@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <style>
+    .button {
+      position: relative;
+      left: 40%;
+      top: 1em;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+  </head>
+  <body>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Number</th>
+      <th scope="col">Address/Port</th>
+      <th scope="col">User name</th>
+      <th scope="col">Status</th>
+      
+    </tr>
+  </thead>
+  <tbody id = "bodytable">
+    
+  </tbody>
+</table>
+<p id = "username"><%=useraut%></p>
+    <p><i><center>Please choose a board to find enemy!!!!!!!!!!</i></p>
+    <button class="button" onclick="next()">Next</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io('/board');
+      var user = document.getElementById('username').innerHTML;      
+      setInterval(function(){
+        socket.emit('redirect',true);
+      }, 1000);
+      
+      socket.on('connect', function(){
+        
+      });
+      var tmp3 = document.getElementById('username').innerHTML;
+      document.getElementById('username').innerHTML='';
+      document.getElementById('username').innerHTML+=",,";
+
+      socket.on('board', function(boardInfo){
+        document.getElementById('bodytable').innerHTML='';
+        document.getElementById('username').innerHTML='???';
+        var check=false;
+        for(var i = 0; i<boardInfo.length;i++){
+           if (boardInfo[i].user==user){
+             check=true;
+           }
+        }
+        for(var i = 0; i<boardInfo.length;i++)
+        {
+         
+           if ((boardInfo[i].status=="Ready to connect")&& (check==false)){
+             document.getElementById('bodytable').innerHTML +='<tr><th scope=\"row\">'+(i+1)+'</th><td>'+boardInfo[i].name+'</td><td>'+boardInfo[i].user+'</td><td><button type=\"button\" onclick=\"selectboard('+i+')\" >Select</button></td></tr>'; 
+           }
+           else if ((boardInfo[i].status=="Ready to connect")&& (check==true)){
+             document.getElementById('bodytable').innerHTML +='<tr><th scope=\"row\">'+(i+1)+'</th><td>'+boardInfo[i].name+'</td><td>'+boardInfo[i].user+'</td><td>You have a Board</td></tr>'; 
+           }
+           else{
+             if (boardInfo[i].user==user){
+             document.getElementById('bodytable').innerHTML +='<tr><th scope=\"row\">'+(i+1)+'</th><td>'+boardInfo[i].name+'</td><td>'+boardInfo[i].user+'</td><td><button type=\"button\" onclick=\"disboard('+i+')\" >Disconnect</button></td></tr>'; 
+
+             }
+             else{
+             console.log('debug 11111');
+             document.getElementById('bodytable').innerHTML +='<tr><th scope=\"row\">'+(i+1)+'</th><td>'+boardInfo[i].name+'</td><td>'+boardInfo[i].user+'</td><td>Not Ready</td></tr>'; 
+             }
+           }
+           
+           
+        }
+      });
+      function selectboard(i){
+        socket.emit('select board',i,user,true);
+        document.getElementById('username').innerHTML+=i;
+      }
+      function disboard(i){
+        socket.emit('disconnect board',i);
+        document.getElementById('username').innerHTML+=i;
+      }
+      function next(){
+        window.location.href="/findenemy";
+      }
+      socket.on('disconnected',function(){
+      });        
+      
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
